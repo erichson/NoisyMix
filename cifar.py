@@ -217,10 +217,9 @@ def main():
                   torch.save(net, OUT_DIR+'.pt')            
             
                 print(
-                    'Epoch {0:3d} | Train Loss {1:.4f} | Test Loss {2:.3f} |'
-                    ' Test Accuracy {3:.2f}'
-                    .format((epoch + 1), train_loss_ema,
-                            test_loss, 100. * test_acc))    
+                    'Epoch {0:3d} | Train Loss {1:.4f} |'
+                    ' Test Accuracy {2:.2f}'
+                    .format((epoch + 1), train_loss_ema, 100. * test_acc))    
                 
       DESTINATION_PATH = args.dataset + '_models/'
       OUT_DIR = os.path.join(DESTINATION_PATH, f'arch_{args.model}_alpha_{args.alpha}_manimixup_{args.manifold_mixup}_addn_{args.add_noise_level}_multn_{args.mult_noise_level}_seed_{args.seed}')
