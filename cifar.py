@@ -37,6 +37,7 @@ parser.add_argument('--momentum', type=float, default=0.9, help='Momentum.')
 parser.add_argument('--decay', '-wd', type=float, default=0.0005, help='Weight decay (L2 penalty).')
 
 # AugMix options
+parser.add_argument('--augmix', type=int, default=0, metavar='S', help='aug mixup (default: 1)')
 parser.add_argument('--mixture-width', default=3, type=int, help='Number of augmentation chains to mix per augmented example')
 parser.add_argument('--mixture-depth', default=-1, type=int, help='Depth of augmentation chains. -1 denotes stochastic depth in [1, 3]')
 parser.add_argument('--aug-severity', default=3, type=int, help='Severity of base augmentation operators')
@@ -151,6 +152,13 @@ def main():
            transforms.Normalize([0.5] * 3, [0.5] * 3)])
       test_transform = preprocess
     
+      if args.augmix == 0:
+          train_transform = transforms.Compose(
+              [transforms.RandomHorizontalFlip(),
+               transforms.RandomCrop(32, padding=4),
+               transforms.Normalize([0.5] * 3, [0.5] * 3)])
+         
+
       if args.dataset == 'cifar10':
         train_data = datasets.CIFAR10(
             './data/cifar', train=True, transform=train_transform, download=True)
@@ -164,10 +172,12 @@ def main():
             './data/cifar', train=False, transform=test_transform, download=True)
         num_classes = 100
     
-      train_data = AugMixDataset(train_data, preprocess, args.no_jsd, args)
+      if args.augmix == 1:
+          train_data = AugMixDataset(train_data, preprocess, args.no_jsd, args)
+      
       train_loader = torch.utils.data.DataLoader(
-          train_data, batch_size=args.train_batch_size,
-          shuffle=True, num_workers=4, pin_memory=True)
+              train_data, batch_size=args.train_batch_size,
+              shuffle=True, num_workers=4, pin_memory=True)          
     
       test_loader = torch.utils.data.DataLoader(
           test_data, batch_size=args.test_batch_size,

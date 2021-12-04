@@ -78,7 +78,7 @@ class Wide_ResNet(nn.Module):
                 add_noise_level=0.0, mult_noise_level=0.0):
     
         k = 0 if mixup_alpha > 0.0 else -1
-        if mixup_alpha > 0.0 and manifold_mixup == True: k = np.random.choice(range(3), 1)[0]
+        if mixup_alpha > 0.0 and manifold_mixup == True: k = np.random.choice(range(4), 1)[0]
         
         if k == 0: # Do input mixup if k is 0 
           x, targets_a, targets_b, lam = do_noisy_mixup(x, targets, alpha=mixup_alpha, 
