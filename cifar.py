@@ -199,7 +199,6 @@ def main():
               1e-6 / args.learning_rate))
     
       best_acc = 0
-      print('Beginning training from epoch:', start_epoch + 1)
       
       for epoch in range(start_epoch, args.epochs):
             
