@@ -37,11 +37,12 @@ parser.add_argument('--momentum', type=float, default=0.9, help='Momentum.')
 parser.add_argument('--decay', '-wd', type=float, default=0.0005, help='Weight decay (L2 penalty).')
 
 # AugMix options
-parser.add_argument('--augmix', type=int, default=0, metavar='S', help='aug mixup (default: 1)')
+parser.add_argument('--augmix', type=int, default=1, metavar='S', help='aug mixup (default: 1)')
 parser.add_argument('--mixture-width', default=3, type=int, help='Number of augmentation chains to mix per augmented example')
 parser.add_argument('--mixture-depth', default=-1, type=int, help='Depth of augmentation chains. -1 denotes stochastic depth in [1, 3]')
 parser.add_argument('--aug-severity', default=3, type=int, help='Severity of base augmentation operators')
-parser.add_argument('--no-jsd', '-nj', action='store_true', help='Turn off JSD consistency loss.')
+parser.add_argument('--jsd', type=int, default=1, metavar='S', help='JSD consistency loss (default: 1)')
+
 parser.add_argument('--all-ops', '-all', action='store_true', help='Turn on all operations (+brightness,contrast,color,sharpness).')
 
 # Noisy Feature Mixup options
@@ -62,14 +63,15 @@ def train(net, train_loader, optimizer, scheduler):
   for i, (images, targets) in enumerate(train_loader):
     optimizer.zero_grad()
 
-    if args.no_jsd:
+    if args.jsd == 0:
         images = images.cuda()
         targets = targets.cuda()
       
         if args.alpha == 0.0:   
             outputs = net(images)
         else:
-            outputs, targets_a, targets_b, lam = net(images, targets=targets, mixup_alpha=args.alpha,
+            outputs, targets_a, targets_b, lam = net(images, targets=targets, jsd=args.jsd,
+                                                     mixup_alpha=args.alpha,
                                                       manifold_mixup=args.manifold_mixup,
                                                       add_noise_level=args.add_noise_level,
                                                       mult_noise_level=args.mult_noise_level)
@@ -80,14 +82,15 @@ def train(net, train_loader, optimizer, scheduler):
             loss = criterion(outputs, targets)      
     
     
-    else:
+    elif args.jsd == 1:
       images_all = torch.cat(images, 0).cuda()
       targets = targets.cuda()      
       
       if args.alpha == 0.0:   
             logits_all = net(images_all)
       else:
-            logits_all, targets_a, targets_b, lam = net(images_all, targets=targets, mixup_alpha=args.alpha,
+            logits_all, targets_a, targets_b, lam = net(images_all, targets=targets, jsd=args.jsd, 
+                                                        mixup_alpha=args.alpha,
                                                       manifold_mixup=args.manifold_mixup,
                                                       add_noise_level=args.add_noise_level,
                                                       mult_noise_level=args.mult_noise_level)
@@ -156,7 +159,9 @@ def main():
           train_transform = transforms.Compose(
               [transforms.RandomHorizontalFlip(),
                transforms.RandomCrop(32, padding=4),
-               transforms.Normalize([0.5] * 3, [0.5] * 3)])
+               transforms.ToTensor(),
+               transforms.Normalize([0.5] * 3, [0.5] * 3),
+               ])
          
 
       if args.dataset == 'cifar10':
@@ -173,7 +178,7 @@ def main():
         num_classes = 100
     
       if args.augmix == 1:
-          train_data = AugMixDataset(train_data, preprocess, args.no_jsd, args)
+          train_data = AugMixDataset(train_data, preprocess, args.jsd, args)
       
       train_loader = torch.utils.data.DataLoader(
               train_data, batch_size=args.train_batch_size,
@@ -220,7 +225,7 @@ def main():
             
                 if is_best:
                   DESTINATION_PATH = args.dataset + '_models/'
-                  OUT_DIR = os.path.join(DESTINATION_PATH, f'best_arch_{args.arch}_alpha_{args.alpha}_manimixup_{args.manifold_mixup}_addn_{args.add_noise_level}_multn_{args.mult_noise_level}_seed_{args.seed}')
+                  OUT_DIR = os.path.join(DESTINATION_PATH, f'best_arch_{args.arch}_augmix_{args.augmix}_jsd_{args.jsd}_alpha_{args.alpha}_manimixup_{args.manifold_mixup}_addn_{args.add_noise_level}_multn_{args.mult_noise_level}_seed_{args.seed}')
                   if not os.path.isdir(DESTINATION_PATH):
                             os.mkdir(DESTINATION_PATH)
                   torch.save(net, OUT_DIR+'.pt')            
@@ -231,7 +236,7 @@ def main():
                     .format((epoch + 1), train_loss_ema, 100. * test_acc))    
                 
       DESTINATION_PATH = args.dataset + '_models/'
-      OUT_DIR = os.path.join(DESTINATION_PATH, f'arch_{args.arch}_alpha_{args.alpha}_manimixup_{args.manifold_mixup}_addn_{args.add_noise_level}_multn_{args.mult_noise_level}_seed_{args.seed}')
+      OUT_DIR = os.path.join(DESTINATION_PATH, f'final_arch_{args.arch}_augmix_{args.augmix}_{args.jsd}_alpha_{args.alpha}_manimixup_{args.manifold_mixup}_addn_{args.add_noise_level}_multn_{args.mult_noise_level}_seed_{args.seed}')
       if not os.path.isdir(DESTINATION_PATH):
                 os.mkdir(DESTINATION_PATH)
       torch.save(net, OUT_DIR+'.pt')

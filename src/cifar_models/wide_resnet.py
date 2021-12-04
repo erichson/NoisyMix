@@ -74,14 +74,14 @@ class Wide_ResNet(nn.Module):
 
         return nn.Sequential(*layers)
 
-    def forward(self, x, targets=None, mixup_alpha=0.0, manifold_mixup=0, 
+    def forward(self, x, targets=None, jsd=0, mixup_alpha=0.0, manifold_mixup=0, 
                 add_noise_level=0.0, mult_noise_level=0.0):
     
         k = 0 if mixup_alpha > 0.0 else -1
         if mixup_alpha > 0.0 and manifold_mixup == True: k = np.random.choice(range(4), 1)[0]
         
         if k == 0: # Do input mixup if k is 0 
-          x, targets_a, targets_b, lam = do_noisy_mixup(x, targets, alpha=mixup_alpha, 
+          x, targets_a, targets_b, lam = do_noisy_mixup(x, targets, jsd=jsd, alpha=mixup_alpha, 
                                               add_noise_level=add_noise_level, 
                                               mult_noise_level=mult_noise_level)
     
@@ -90,7 +90,7 @@ class Wide_ResNet(nn.Module):
         for i, ResidualBlock in enumerate(self.blocks):
             out = ResidualBlock(out)
             if k == (i+1): # Do manifold mixup if k is greater 0
-                out, targets_a, targets_b, lam = do_noisy_mixup(out, targets, alpha=mixup_alpha, 
+                out, targets_a, targets_b, lam = do_noisy_mixup(out, targets, jsd=jsd, alpha=mixup_alpha, 
                                            add_noise_level=add_noise_level, 
                                            mult_noise_level=mult_noise_level)        
         

@@ -40,15 +40,15 @@ def aug(image, preprocess, args):
 class AugMixDataset(torch.utils.data.Dataset):
   """Dataset wrapper to perform AugMix augmentation."""
 
-  def __init__(self, dataset, preprocess, no_jsd=False, args=None):
+  def __init__(self, dataset, preprocess, jsd=False, args=None):
     self.dataset = dataset
     self.preprocess = preprocess
-    self.no_jsd = no_jsd
+    self.jsd = jsd
     self.args = args
 
   def __getitem__(self, i):
     x, y = self.dataset[i]
-    if self.no_jsd:
+    if self.jsd==0:
       return aug(x, self.preprocess, self.args), y
     else:
       im_tuple = (self.preprocess(x), aug(x, self.preprocess, self.args), aug(x, self.preprocess, self.args))
