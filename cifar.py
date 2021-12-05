@@ -236,7 +236,7 @@ def main():
                     .format((epoch + 1), train_loss_ema, 100. * test_acc))    
                 
       DESTINATION_PATH = args.dataset + '_models/'
-      OUT_DIR = os.path.join(DESTINATION_PATH, f'final_arch_{args.arch}_augmix_{args.augmix}_{args.jsd}_alpha_{args.alpha}_manimixup_{args.manifold_mixup}_addn_{args.add_noise_level}_multn_{args.mult_noise_level}_seed_{args.seed}')
+      OUT_DIR = os.path.join(DESTINATION_PATH, f'final_arch_{args.arch}_augmix_{args.augmix}_jsd_{args.jsd}_alpha_{args.alpha}_manimixup_{args.manifold_mixup}_addn_{args.add_noise_level}_multn_{args.mult_noise_level}_seed_{args.seed}')
       if not os.path.isdir(DESTINATION_PATH):
                 os.mkdir(DESTINATION_PATH)
       torch.save(net, OUT_DIR+'.pt')
