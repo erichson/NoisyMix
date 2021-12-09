@@ -13,32 +13,40 @@ IMAGENET_TRAIN_FOLDER = '/scratch/data/imagenet12/train'
 IMAGENET_TEST_FOLDER = '/scratch/data/imagenet12/val'
 
 # download from https://zenodo.org/record/2535967/files/CIFAR-10-C.tar?download=1
-CIFAR10C_FOLDER = 'data/cifar/CIFAR-10-C/'
+CIFAR10C_FOLDER = 'data/CIFAR-10-C/'
+CIFAR100C_FOLDER = 'data/CIFAR-100-C/'
+
+
 NOISE_TYPES = [
+    "gaussian_noise",
+    "shot_noise",
+    "impulse_noise",
+    "speckle_noise",
+    
+    "defocus_blur",
+    "glass_blur",    
+    "motion_blur",
+    "zoom_blur",
+
+    "snow",
+    "frost",
+    "fog",
+   
     "brightness",
     "contrast",
-    "defocus_blur",
     "elastic_transform",
-    "fog",
-    "frost",
-    "gaussian_blur",
-    "gaussian_noise",
-    "glass_blur",
-    "impulse_noise",
+    
     "jpeg_compression",
-    "motion_blur",
     "pixelate",
-    "saturate",
-    "shot_noise",
-    "snow",
-    "spatter",
-    "speckle_noise",
-    "zoom_blur",
+
+    #"gaussian_blur",
+    #"saturate",
+    #"spatter",
 ]
 SEVERITIES = [1, 2, 3, 4, 5]
 
 
-class CIFAR10Corrupt(VisionDataset):
+class CIFARCorrupt(VisionDataset):
 
     def __init__(self,
                  root="data/CIFAR-10-C",
@@ -46,7 +54,7 @@ class CIFAR10Corrupt(VisionDataset):
                  noise=None,
                  transform=None,
                  target_transform=None):
-        super(CIFAR10Corrupt, self).__init__(root, transform=transform, target_transform=target_transform)
+        super(CIFARCorrupt, self).__init__(root, transform=transform, target_transform=target_transform)
 
         noise = NOISE_TYPES if noise is None else noise
 
@@ -65,7 +73,7 @@ class CIFAR10Corrupt(VisionDataset):
         self.data = X
         self.targets = Y
         self.noise_to_nsamples = (noise, X.shape, Y.shape)
-        print(f"Loaded {severity}-{noise}: X {X.shape} Y: {Y.shape}")
+        #print(f"Loaded {severity}-{noise}: X {X.shape} Y: {Y.shape}")
 
     def __len__(self):
         return len(self.data)
@@ -89,12 +97,14 @@ class CIFAR10Corrupt(VisionDataset):
 
 
 
-
 def getData(name='cifar10', train_bs=128, test_bs=512, train_path=None, test_path=None, severity=0, noise='fog'):
 
     if name == 'cifar10':
-        mean = [x / 255 for x in [125.3, 123.0, 113.9]]
-        std = [x / 255 for x in [63.0, 62.1, 66.7]]
+        #mean = [x / 255 for x in [125.3, 123.0, 113.9]]
+        #std = [x / 255 for x in [63.0, 62.1, 66.7]]
+        mean = [0.5] * 3
+        std = [0.5] * 3
+        
         transform_train = transforms.Compose([
             transforms.RandomCrop(32, padding=4),
             transforms.RandomHorizontalFlip(),
@@ -124,9 +134,11 @@ def getData(name='cifar10', train_bs=128, test_bs=512, train_path=None, test_pat
     
     
     elif name == 'cifar100':
-        mean = [x / 255 for x in [129.3, 124.1, 112.4]]
-        std = [x / 255 for x in [68.2, 65.4, 70.4]]
-        
+        #mean = [x / 255 for x in [129.3, 124.1, 112.4]]
+        #std = [x / 255 for x in [68.2, 65.4, 70.4]]
+        mean = [0.5] * 3
+        std = [0.5] * 3
+                
         transform_train = transforms.Compose([
             transforms.RandomCrop(32, padding=4),
             transforms.RandomHorizontalFlip(),
@@ -185,26 +197,39 @@ def getData(name='cifar10', train_bs=128, test_bs=512, train_path=None, test_pat
                                                   num_workers=32)
 
     elif name == 'cifar10c':
-        transform_train = transforms.Compose([
-            transforms.RandomCrop(32, padding=4),
-            transforms.RandomHorizontalFlip(),
-            transforms.ToTensor(),
-            transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
-        ])
+        mean = [0.5] * 3
+        std = [0.5] * 3
 
         transform_test = transforms.Compose([
             transforms.ToTensor(),
-            transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+            transforms.Normalize(mean, std),
         ])
 
-        trainset = datasets.CIFAR10(root='../cifar10', train=True, download=True, transform=transform_train)
-        train_loader = torch.utils.data.DataLoader(trainset,
-                                                   batch_size=train_bs,
-                                                   shuffle=True,
-                                                   num_workers=4,
-                                                   pin_memory=True)
+        train_loader = None
 
-        testset = CIFAR10Corrupt(root=CIFAR10C_FOLDER,
+        testset = CIFARCorrupt(root=CIFAR10C_FOLDER,
+                                          severity=[severity],
+                                          noise=[noise],
+                                          transform=transform_test)
+        
+        test_loader = torch.utils.data.DataLoader(testset,
+                                                  batch_size=test_bs,
+                                                  shuffle=False,
+                                                  num_workers=4,
+                                                  pin_memory=True)
+
+    elif name == 'cifar100c':
+        mean = [0.5] * 3
+        std = [0.5] * 3
+
+        transform_test = transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Normalize(mean, std),
+        ])
+
+        train_loader = None
+
+        testset = CIFARCorrupt(root=CIFAR100C_FOLDER,
                                           severity=[severity],
                                           noise=[noise],
                                           transform=transform_test)
