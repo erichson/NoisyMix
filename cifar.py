@@ -50,6 +50,7 @@ parser.add_argument('--alpha', type=float, default=0.0, metavar='S', help='for m
 parser.add_argument('--manifold_mixup', type=int, default=0, metavar='S', help='manifold mixup (default: 0)')
 parser.add_argument('--add_noise_level', type=float, default=0.0, metavar='S', help='level of additive noise')
 parser.add_argument('--mult_noise_level', type=float, default=0.0, metavar='S', help='level of multiplicative noise')
+parser.add_argument('--sparse_level', type=float, default=0.0, metavar='S', help='sparse noise')
 
 args = parser.parse_args()
 
@@ -74,7 +75,8 @@ def train(net, train_loader, optimizer, scheduler):
                                                      mixup_alpha=args.alpha,
                                                       manifold_mixup=args.manifold_mixup,
                                                       add_noise_level=args.add_noise_level,
-                                                      mult_noise_level=args.mult_noise_level)
+                                                      mult_noise_level=args.mult_noise_level,
+                                                      sparse_level=args.sparse_level)
         
         if args.alpha>0:
             loss = mixup_criterion(criterion, outputs, targets_a, targets_b, lam)
@@ -93,7 +95,8 @@ def train(net, train_loader, optimizer, scheduler):
                                                         mixup_alpha=args.alpha,
                                                       manifold_mixup=args.manifold_mixup,
                                                       add_noise_level=args.add_noise_level,
-                                                      mult_noise_level=args.mult_noise_level)
+                                                      mult_noise_level=args.mult_noise_level,
+                                                      sparse_level=args.sparse_level)
         
       if args.alpha>0:
           logits_clean, logits_aug1, logits_aug2 = torch.split(logits_all, images[0].size(0))

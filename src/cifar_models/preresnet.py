@@ -81,7 +81,7 @@ class PreActResNet(nn.Module):
         return nn.Sequential(*layers)
 
     def forward(self, x, targets=None, jsd=0, mixup_alpha=0.0, manifold_mixup=0, 
-                add_noise_level=0.0, mult_noise_level=0.0):
+                add_noise_level=0.0, mult_noise_level=0.0, sparse_level=1.0):
            
         k = 0 if mixup_alpha > 0.0 else -1
         if mixup_alpha > 0.0 and manifold_mixup == True: k = np.random.choice(range(4), 1)[0]
@@ -89,7 +89,8 @@ class PreActResNet(nn.Module):
         if k == 0: # Do input mixup if k is 0 
           x, targets_a, targets_b, lam = do_noisy_mixup(x, targets, jsd=jsd, alpha=mixup_alpha, 
                                               add_noise_level=add_noise_level, 
-                                              mult_noise_level=mult_noise_level)
+                                              mult_noise_level=mult_noise_level,
+                                              sparse_level=sparse_level)
 
         out = self.conv1(x)
         
@@ -98,7 +99,8 @@ class PreActResNet(nn.Module):
             if k == (i+1): # Do manifold mixup if k is greater 0
                 out, targets_a, targets_b, lam = do_noisy_mixup(out, targets, jsd=jsd, alpha=mixup_alpha, 
                                            add_noise_level=add_noise_level, 
-                                           mult_noise_level=mult_noise_level)
+                                           mult_noise_level=mult_noise_level,
+                                           sparse_level=sparse_level)
 
         out = F.avg_pool2d(out, 4)
         out = out.view(out.size(0), -1)
