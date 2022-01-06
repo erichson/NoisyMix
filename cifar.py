@@ -50,6 +50,7 @@ parser.add_argument('--alpha', type=float, default=0.0, metavar='S', help='for m
 parser.add_argument('--manifold_mixup', type=int, default=0, metavar='S', help='manifold mixup (default: 0)')
 parser.add_argument('--add_noise_level', type=float, default=0.0, metavar='S', help='level of additive noise')
 parser.add_argument('--mult_noise_level', type=float, default=0.0, metavar='S', help='level of multiplicative noise')
+parser.add_argument('--sparse_level', type=float, default=0.0, metavar='S', help='sparse noise')
 
 args = parser.parse_args()
 
@@ -74,7 +75,8 @@ def train(net, train_loader, optimizer, scheduler):
                                                      mixup_alpha=args.alpha,
                                                       manifold_mixup=args.manifold_mixup,
                                                       add_noise_level=args.add_noise_level,
-                                                      mult_noise_level=args.mult_noise_level)
+                                                      mult_noise_level=args.mult_noise_level,
+                                                      sparse_level=args.sparse_level)
         
         if args.alpha>0:
             loss = mixup_criterion(criterion, outputs, targets_a, targets_b, lam)
@@ -93,7 +95,8 @@ def train(net, train_loader, optimizer, scheduler):
                                                         mixup_alpha=args.alpha,
                                                       manifold_mixup=args.manifold_mixup,
                                                       add_noise_level=args.add_noise_level,
-                                                      mult_noise_level=args.mult_noise_level)
+                                                      mult_noise_level=args.mult_noise_level,
+                                                      sparse_level=args.sparse_level)
         
       if args.alpha>0:
           logits_clean, logits_aug1, logits_aug2 = torch.split(logits_all, images[0].size(0))
@@ -236,7 +239,7 @@ def main():
                     .format((epoch + 1), train_loss_ema, 100. * test_acc))    
                 
       DESTINATION_PATH = args.dataset + '_models/'
-      OUT_DIR = os.path.join(DESTINATION_PATH, f'final_arch_{args.arch}_augmix_{args.augmix}_{args.jsd}_alpha_{args.alpha}_manimixup_{args.manifold_mixup}_addn_{args.add_noise_level}_multn_{args.mult_noise_level}_seed_{args.seed}')
+      OUT_DIR = os.path.join(DESTINATION_PATH, f'final_arch_{args.arch}_augmix_{args.augmix}_jsd_{args.jsd}_alpha_{args.alpha}_manimixup_{args.manifold_mixup}_addn_{args.add_noise_level}_multn_{args.mult_noise_level}_seed_{args.seed}')
       if not os.path.isdir(DESTINATION_PATH):
                 os.mkdir(DESTINATION_PATH)
       torch.save(net, OUT_DIR+'.pt')
