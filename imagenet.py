@@ -57,6 +57,7 @@ parser.add_argument('--alpha', type=float, default=0.0, metavar='S', help='for m
 parser.add_argument('--manifold_mixup', type=int, default=0, metavar='S', help='manifold mixup (default: 0)')
 parser.add_argument('--add_noise_level', type=float, default=0.0, metavar='S', help='level of additive noise')
 parser.add_argument('--mult_noise_level', type=float, default=0.0, metavar='S', help='level of multiplicative noise')
+parser.add_argument('--sparse_level', type=float, default=0.0, metavar='S', help='sparse noise')
 
 args = parser.parse_args()
 
@@ -91,7 +92,8 @@ def train(net, train_loader, optimizer, scheduler):
                                                                     jsd=args.jsd, 
                                                                     alpha=args.alpha, 
                                                                     add_noise_level=args.add_noise_level, 
-                                                                    mult_noise_level=args.mult_noise_level)
+                                                                    mult_noise_level=args.mult_noise_level,
+                                                                    sparse_level=args.sparse_level)
                 outputs = net(mixed_up_outputs, resume_layer=k+1, exit_layer=-1)
             
             if args.alpha>0:
@@ -116,7 +118,8 @@ def train(net, train_loader, optimizer, scheduler):
                                                                     jsd=args.jsd, 
                                                                     alpha=args.alpha, 
                                                                     add_noise_level=args.add_noise_level, 
-                                                                    mult_noise_level=args.mult_noise_level)
+                                                                    mult_noise_level=args.mult_noise_level,
+                                                                    sparse_level=args.sparse_level)
                 logits_all = net(mixed_up_outputs, resume_layer=k+1, exit_layer=-1)
             
             if args.alpha>0:
