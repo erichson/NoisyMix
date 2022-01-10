@@ -196,7 +196,8 @@ class ResNet(nn.Module):
         return SequentialWithArgs(*layers)
         # return nn.Sequential(*layers)
 
-    def _forward(self, x, resume_layer=0, exit_layer=-1):
+    def _forward(self, x, resume_layer=0, exit_layer=-1, 
+        with_latent=False, fake_relu=False, no_relu=False):
         if exit_layer == 0:
             return x
 
@@ -229,6 +230,8 @@ class ResNet(nn.Module):
 
             x = self.avgpool(x)
             x = torch.flatten(x, 1)
+            if with_latent:
+                return x
             x = self.fc(x)
             return x
 
