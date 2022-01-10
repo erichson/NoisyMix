@@ -66,13 +66,13 @@ def check_that_dataset_supports_per_class_accuracy(args):
 
 
 def make_store(args):
-    store = initialize_store(f'{args.model_id}_{args.dataset}') 
+    store = initialize_store(args.out_dir, f'{args.model_id}_{args.dataset}') 
     store = add_metadata_to_store_if_possible(store, args)
     return store
 
 
-def initialize_store(filedir):
-    return cox.store.Store(filedir)
+def initialize_store(out_dir, exp_name):
+    return cox.store.Store(out_dir, exp_name)
 
 
 def add_metadata_to_store_if_possible(store, args):
