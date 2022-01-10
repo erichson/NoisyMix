@@ -5,7 +5,12 @@ import numpy as np
 from robustness import datasets
 from robustness.datasets import DataSet, CIFAR
 import torch as ch
-from constants import DATASET_NAME_TO_PATH, DEFAULT_TRAIN_TRANSFORMS, DEFAULT_TEST_TRANSFORMS
+
+import sys
+from pathlib import Path
+this_scripts_path = Path(os.path.abspath(__file__))
+sys.path.insert(1, str(this_scripts_path.parent.parent))
+from transfer_learning.constants import DATASET_NAME_TO_PATH, DEFAULT_TRAIN_TRANSFORMS, DEFAULT_TEST_TRANSFORMS
 
 from torch.utils.data.dataset import Dataset
 from torch.utils.data import Dataset, DataLoader, Subset
