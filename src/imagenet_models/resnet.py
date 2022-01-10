@@ -229,10 +229,10 @@ class ResNet(nn.Module):
         if resume_layer <= 5:
 
             x = self.avgpool(x)
-            x = torch.flatten(x, 1)
+            pre_out = torch.flatten(x, 1)
+            x = self.fc(pre_out)
             if with_latent:
-                return x
-            x = self.fc(x)
+                return x, pre_out
             return x
 
     # Allow for accessing forward method in a inherited class
