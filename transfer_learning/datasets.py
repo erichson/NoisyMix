@@ -5,6 +5,7 @@ import numpy as np
 from robustness import datasets
 from robustness.datasets import DataSet, CIFAR
 import torch as ch
+import torchvision
 
 import sys
 from pathlib import Path
@@ -340,9 +341,9 @@ class FOOD101():
             
     def get_dataset(self):
         train_tfms, valid_tfms = self._get_tfms() # transformations
-        self.train_ds = datasets.ImageFolder(root=self.TRAIN_PATH,
+        self.train_ds = torchvision.datasets.ImageFolder(root=self.TRAIN_PATH,
                                         transform=train_tfms)
-        self.valid_ds = datasets.ImageFolder(root=self.VALID_PATH,
+        self.valid_ds = torchvision.datasets.ImageFolder(root=self.VALID_PATH,
                                         transform=valid_tfms)        
         self.train_classes = self.train_ds.classes
         self.valid_classes = self.valid_ds.classes
