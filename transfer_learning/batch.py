@@ -17,7 +17,7 @@ gpus_per_command = 1
 polling_delay_seconds = .1
 os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
 
-freeze_levels = [-1, 4]
+freeze_levels = ['4']
 
 from constants import DATASET_NAME_TO_PATH
 datasets = list(DATASET_NAME_TO_PATH.keys())
@@ -39,7 +39,7 @@ commands_to_run = [f'python main.py '\
     f'--out-dir results '\
     f'--adv-train 0 '\
     f'--arch resnet50 '\
-    f'--lr {params[(params["dataset"]==ds) & (params["freeze_level"]==fl)].lr.item()} '\
+    f'--lr {params[(params["dataset"]==ds) & (params["freeze_level"]==int(fl))].lr.item()} '\
     for model, ds, fl in product(model_ids, datasets, freeze_levels)]
 
 commands_to_run.reverse()
