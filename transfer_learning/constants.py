@@ -1,5 +1,7 @@
 MEGAMIX_MODEL_PATH = '/home/ubuntu/MegaMix/imagenet_models/'\
-                'best_arch_resnet50_augmix_1_jsd_1_alpha_1.0_manimixup_1_addn_0.4_multn_0.4_seed_1.pt'
+                'final_arch_resnet50_augmix_1_jsd_1_alpha_1.0_manimixup_1_addn_0.4_multn_0.4_seed_1.pt'
+
+PUZZLEMIX_MODEL_PATH = '/home/ubuntu/MegaMix/transfer_learning/models/imagenet/puzzlemix/imagenet_puzzlemix.pth.tar'
 
 MODEL_ID_TO_ROBUSTBENCH_ARGS = {
     'augmix':{'model_name' : 'Hendrycks2020AugMix', 
@@ -26,6 +28,8 @@ DATASET_NAME_TO_PATH = {
     'pets': 'downloaded_datasets/pets',
     'caltech101': 'downloaded_datasets/caltech101',
     'caltech256': 'downloaded_datasets/caltech256',
+    'cifar10': '/tmp',
+    'cifar100': '/tmp'
 }
 
 from torchvision import transforms

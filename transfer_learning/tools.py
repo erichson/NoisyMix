@@ -157,6 +157,9 @@ def replace_fc_layer(model, num_classes):
 def load_model_from_id(model_id):
     if model_id == 'megamix':
         return load_megamix_model()
+    
+    elif model_id == 'puzzlemix':
+        return load_puzzlemix_model()
 
     elif model_id in constants.MODEL_ID_TO_ROBUSTBENCH_ARGS:
         return load_model_from_robustbench(model_id)
@@ -166,7 +169,16 @@ def load_model_from_id(model_id):
 
 
 def get_supported_model_ids():
-    return list(constants.MODEL_ID_TO_ROBUSTBENCH_ARGS.keys()) + ['megamix']
+    return list(constants.MODEL_ID_TO_ROBUSTBENCH_ARGS.keys()) + ['megamix', 'puzzlemix']
+
+def load_puzzlemix_model(model_path=constants.PUZZLEMIX_MODEL_PATH):
+    model = resnet50(num_classes=1000)
+    
+    state_dict_with_module_prepended = torch.load(model_path)['state_dict']
+    removed_module_from_state_dict = {k.replace('module.', ''):v for k,v in state_dict_with_module_prepended.items()}
+    
+    model.load_state_dict(removed_module_from_state_dict)
+    return model
 
 def load_megamix_model(model_path=constants.MEGAMIX_MODEL_PATH):
     model = resnet50(num_classes=1000)
