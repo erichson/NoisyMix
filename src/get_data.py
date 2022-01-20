@@ -21,7 +21,6 @@ NOISE_TYPES = [
     "gaussian_noise",
     "shot_noise",
     "impulse_noise",
-    "speckle_noise",
     
     "defocus_blur",
     "glass_blur",    
@@ -31,14 +30,14 @@ NOISE_TYPES = [
     "snow",
     "frost",
     "fog",
-   
     "brightness",
+    
     "contrast",
     "elastic_transform",
-    
-    "jpeg_compression",
     "pixelate",
-
+    "jpeg_compression",
+    
+    #"speckle_noise",
     #"gaussian_blur",
     #"saturate",
     #"spatter",
