@@ -1,5 +1,5 @@
-MEGAMIX_MODEL_PATH = '/home/ubuntu/MegaMix/imagenet_models/'\
-                'best_arch_resnet50_augmix_1_jsd_1_alpha_1.0_manimixup_1_addn_0.4_multn_0.4_seed_1.pt'
+MEGAMIX_MODEL_PATH = 'imagenet_models/'\
+                'final_arch_resnet50_augmix_1_jsd_1_alpha_1.0_manimixup_1_addn_0.4_multn_0.4_seed_1.pt'
 
 MODEL_ID_TO_ROBUSTBENCH_ARGS = {
     'augmix':{'model_name' : 'Hendrycks2020AugMix', 
