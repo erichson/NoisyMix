@@ -52,7 +52,7 @@ def add_custom_args_to_parser(parser):
                         help='Up to what layer to freeze in the pretrained model (assumes a resnet architectures)')
     parser.add_argument('--per-class-accuracy', action='store_true', help='Report the per-class accuracy. '
                         'Can be used only with pets, caltech101, caltech256, aircraft, and flowers.')
-    parser.add_argument('--model_id', type=str, default='megamix', choices=get_supported_model_ids(), 
+    parser.add_argument('--model_id', type=str, default='noisymix', choices=get_supported_model_ids(), 
                         help='Report the per-class accuracy. ')
     parser.add_argument('--out_dir', type=str, default='results', 
                         help='Where the results are saved. ')
@@ -155,8 +155,8 @@ def replace_fc_layer(model, num_classes):
 
 
 def load_model_from_id(model_id):
-    if model_id == 'megamix':
-        return load_megamix_model()
+    if model_id == 'noisy':
+        return load_noisymix_model()
     elif model_id == 'fast_autoaugment':
         return load_fast_autoaugment_model()
     elif model_id == 'mixup':
@@ -201,7 +201,7 @@ def load_puzzlemix_model(model_path=constants.PUZZLEMIX_MODEL_PATH):
     model.load_state_dict(removed_module_from_state_dict)
     return model
 
-def load_megamix_model(model_path=constants.MEGAMIX_MODEL_PATH):
+def load_noisymix_model(model_path=constants.NOISYMIX_MODEL_PATH):
     model = resnet50(num_classes=1000)
     
     state_dict_with_module_prepended = torch.load(model_path).state_dict()
