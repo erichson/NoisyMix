@@ -1,10 +1,9 @@
 
-MEGAMIX_MODEL_PATH = '/home/ubuntu/MegaMix/imagenet_models/'\
-                'final_arch_resnet50_augmix_1_jsd_1_alpha_1.0_manimixup_1_addn_0.4_multn_0.4_seed_1.pt'
+NOISYMIX_MODEL_PATH = 'Insert path gere'
 
-PUZZLEMIX_MODEL_PATH = '/home/ubuntu/MegaMix/transfer_learning/models/imagenet/puzzlemix/imagenet_puzzlemix.pth.tar'
-FAST_AUTOAUGMENT_MODEL_PATH = '/home/ubuntu/MegaMix/transfer_learning/models/imagenet/fast_autoaugment/imagenet_resnet50_top1_22.2.pth'
-MIXUP_MODEL_PATH = '/home/ubuntu/MegaMix/transfer_learning/models/imagenet/mixup/model_best.pth.tar'
+PUZZLEMIX_MODEL_PATH = 'Insert path gere'
+FAST_AUTOAUGMENT_MODEL_PATH = 'Insert path gere'
+MIXUP_MODEL_PATH = 'Insert path gere'
 
 
 MODEL_ID_TO_ROBUSTBENCH_ARGS = {
