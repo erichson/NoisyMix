@@ -1,6 +1,6 @@
 ## NoisyMix: Boosting Model Robustness and Accuracy
 
-NoisyMix is a training scheme that combines data augmentations with stability training and noise injections. Models trained with NoisyMix generalize better and show to be more robustnes to common currptions. Compared the other data augementation schemes, the advantage is substantial when models are evlauated on ImageNet-C, and ImageNet-R as shown by the following figure.
+NoisyMix is a training scheme that judiciously combines data augmentations with stability training and noise injections. Compared to other data augmentation schemes, models trained with NoisyMix generalize better and are more robust to common corruptions. In particular, the advantage of NoisyMix is substantial when models are evaluated on ImageNet-C and ImageNet-R, as shown by the following figure.
 
 <p align="center">
     <img src="figures/cimagenet.png" height="300">
@@ -23,5 +23,5 @@ export CUDA_VISIBLE_DEVICES=0; python3 cifar.py --arch wideresnet28 --augmix 1 -
 
 
 
-For more details, please refer to the [paper](). If you find this work useful and use it on your own research, please concider citing our paper.   Please, also consider to cite Noisy Feature Mixup [paper](https://arxiv.org/abs/2110.02180) and AugMix [paper](https://arxiv.org/abs/1912.02781), since our NoisyMix scheme leverages ideas such as data augmentations with stability training and noise injections.
+For more details, please refer to the [paper](). If you find this work useful and use it on your own research, please concider citing our paper. Please, also consider to cite [Noisy Feature Mixup](https://arxiv.org/abs/2110.02180) and [AugMix](https://arxiv.org/abs/1912.02781), since our NoisyMix scheme leverages ideas such as data augmentations with stability training and noise injections.
 
