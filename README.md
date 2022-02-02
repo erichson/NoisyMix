@@ -3,15 +3,23 @@
 It is well-known that deep learning models are typically [brittle to input perturbations](https://arxiv.org/abs/1312.6199), limiting their applicability in many real-world problems. Four common methods to improve model robustness to input perturbations are:
 - Data augmentations
 - Stability training
-- Mixup
+- Mixup 
 - Noise injections
 
 **How can we leverage the strength of these methods to further improve both model robustness and test accuracy?**
 
-*NoisyMix* is a training scheme that judiciously combines all of the above components in a single setup to boost both robustness and accuracy. Compared to other data augmentation schemes, models trained with *NoisyMix* are more robust to common corruptions and generalize better. In particular, the advantage of *NoisyMix* is substantial when the models are evaluated on ImageNet-C and ImageNet-R, as shown by the following figure.
+*NoisyMix* is a training scheme that judiciously combines all of the above components in a single setup to boost both robustness and accuracy. It implements [feature mixup](https://arxiv.org/abs/1806.05236) and [noise injections](https://arxiv.org/abs/2110.02180) on top of a [stability training scheme](https://arxiv.org/abs/1604.04326) on an [AugMix-augmented](https://arxiv.org/abs/1912.02781) data set. We choose the distance measure in the stability objective to be the Jensen-Shannon divergence (JSD). 
+
+The advantage of *NoisyMix* compared to other schemes is illustrated on the following binary classification task on a noisy toy dataset (without augmentation), where it can be seen that *NoisyMix* is most effective at smoothing the decision boundary and yields the best test accuracy.
 
 <p align="center">
-    <img src="figures/cimagenet.png" height="350">
+    <img src="figures/toy_result.png" height="400">
+</p>
+
+Compared to other data augmentation schemes, models trained with *NoisyMix* are more robust to common corruptions and generalize better. In particular, the advantage of *NoisyMix* is substantial when the models are evaluated on ImageNet-C and ImageNet-R, as shown by the following figure.
+
+<p align="center">
+    <img src="figures/cimagenet.png" height="300">
 </p>
 
 
